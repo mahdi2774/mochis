@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mochi Pets Collection - by IncognitoM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Pacifico&family=Fredoka+One&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #fff0f3;
+            overflow-x: hidden;
+            cursor: default;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                radial-gradient(ellipse at 15% 15%, rgba(255,182,193,0.35) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 25%, rgba(255,192,203,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 70%, rgba(255,174,188,0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 10% 85%, rgba(255,228,235,0.4) 0%, transparent 40%),
+                radial-gradient(ellipse at 90% 90%, rgba(255,200,210,0.3) 0%, transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255,150,170,0.08) 1px, transparent 1px);
+            background-size: 28px 28px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .shapes-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .soft-shape {
+            position: absolute;
+            border-radius: 50%;
+            animation: softFloat var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes softFloat {
+            0%, 100% { opacity: 0; transform: translateY(0) scale(0.8); }
+            30% { opacity: var(--max-opacity); }
+            70% { opacity: var(--max-opacity); }
+            50% { transform: translateY(var(--drift-y)) scale(1.1); }
+        }
+
+        .float-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp var(--float-duration) linear infinite;
+            opacity: 0;
+            font-size: var(--size);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) translateX(var(--drift)) rotate(360deg); opacity: 0; }
+        }
+
+        .petal {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            animation: petalFall var(--fall-duration) linear infinite;
+            animation-delay: var(--delay);
+        }
+
+        .petal-inner {
+            width: var(--petal-size);
+            height: var(--petal-size);
+            background: var(--petal-color);
+            border-radius: 50% 0 50% 50%;
+            transform: rotate(45deg);
+            animation: petalSpin var(--spin-duration) linear infinite;
+        }
+
+        @keyframes petalFall {
+            0% { transform: translateY(-20px) translateX(0); opacity: 0; }
+            5% { opacity: var(--petal-opacity); }
+            90% { opacity: var(--petal-opacity); }
+            100% { transform: translateY(100vh) translateX(var(--petal-drift)); opacity: 0; }
+        }
+
+        @keyframes petalSpin { to { transform: rotate(405deg); } }
+
+        .poster {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(255,150,170,0.2) 0%, rgba(255,200,210,0.1) 40%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: heroPulse 4s infinite ease-in-out;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0;
+            width: 100%; height: 120px;
+            background: linear-gradient(to bottom, transparent, #fff0f3);
+            pointer-events: none;
+        }
+
+        @keyframes heroPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.8; }
+        }
+
+        .hero-badge {
+            background: linear-gradient(135deg, rgba(255,130,160,0.25), rgba(255,80,120,0.15));
+            border: 1.5px solid rgba(255,150,170,0.5);
+            padding: 8px 24px;
+            border-radius: 50px;
+            color: #d44070;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            animation: fadeInDown 1s ease-out;
+            box-shadow: 0 4px 15px rgba(255,130,160,0.2);
+        }
+
+        .main-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(3rem, 8vw, 7rem);
+            text-align: center;
+            line-height: 1.1;
+            margin-bottom: 10px;
+            animation: titleReveal 1.5s ease-out;
+        }
+
+        .main-title .line1 {
+            display: block;
+            background: linear-gradient(135deg, #ff6b8a, #e8447a, #d42060);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 20px rgba(228,68,122,0.35));
+        }
+
+        .main-title .line2 {
+            display: block;
+            background: linear-gradient(135deg, #e8759a, #d4608a, #c0507a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 20px rgba(212,96,138,0.3));
+            font-size: 0.6em;
+        }
+
+        .subtitle {
+            font-family: 'Pacifico', cursive;
+            color: #b86080;
+            font-size: clamp(1rem, 2.5vw, 1.6rem);
+            margin-top: 15px;
+            animation: fadeInUp 1.8s ease-out;
+        }
+
+        .suspense-tagline {
+            margin-top: 40px;
+            font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+            color: #c07090;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            animation: flickerIn 3s ease-out;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .suspense-tagline::after {
+            content: '|';
+            animation: cursorBlink 1s infinite;
+            color: #e8447a;
+            margin-left: 4px;
+        }
+
+        @keyframes cursorBlink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        @keyframes flickerIn {
+            0% { opacity: 0; letter-spacing: 20px; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; letter-spacing: 6px; }
+        }
+        @keyframes titleReveal {
+            0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: #c07090;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            animation: bounceDown 2s infinite;
+            z-index: 3;
+        }
+
+        .scroll-hint .arrow {
+            width: 20px; height: 20px;
+            border-right: 2px solid #e8759a;
+            border-bottom: 2px solid #e8759a;
+            transform: rotate(45deg);
+        }
+
+        @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(10px); opacity: 0.9; }
+        }
+
+        /* ===== PETS SECTION ===== */
+        .pets-section {
+            width: 100%;
+            max-width: 1400px;
+            padding: 80px 20px;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(2rem, 4vw, 3rem);
+            background: linear-gradient(135deg, #e8447a, #d42060);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: #b06080;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .section-header::after {
+            content: '♡ ♡ ♡';
+            display: block;
+            margin-top: 15px;
+            color: #e8a0b8;
+            font-size: 0.8rem;
+            letter-spacing: 8px;
+        }
+
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        /* ===== PET CARD ===== */
+        .pet-card {
+            position: relative;
+            background: linear-gradient(145deg, #ffffff, #fff5f7, #ffe8ee);
+            border: 1.5px solid rgba(228,68,122,0.15);
+            border-radius: 24px;
+            padding: 40px 30px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: translateY(60px);
+            box-shadow: 0 4px 25px rgba(228,68,122,0.08), 0 1px 3px rgba(228,68,122,0.05);
+        }
+
+        .pet-card.visible { opacity: 1; transform: translateY(0); }
+
+        .pet-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 0%), var(--card-glow), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .pet-card:hover::before { opacity: 1; }
+
+        .pet-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: var(--card-border);
+            box-shadow: 0 20px 60px var(--card-shadow), 0 8px 25px rgba(228,68,122,0.12);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 16px; right: 20px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.7rem;
+            color: #e0a0b5;
+            letter-spacing: 1px;
+        }
+
+        .pet-display {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            position: relative;
+            transition: all 0.5s ease;
+            background: radial-gradient(circle, rgba(255,200,215,0.25), transparent);
+        }
+
+        .pet-card:hover .pet-display { transform: scale(1.1); }
+
+        .pet-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--ring-color);
+            animation: spinRing 3s linear infinite;
+        }
+
+        .pet-ring:nth-child(2) {
+            width: 110%; height: 110%;
+            top: -5%; left: -5%;
+            border-top-color: transparent;
+            border-right-color: var(--ring-color);
+            animation-duration: 4s;
+            animation-direction: reverse;
+            opacity: 0.4;
+        }
+
+        @keyframes spinRing { to { transform: rotate(360deg); } }
+
+        .pet-avatar {
+            width: 60px; height: 48px;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s;
+        }
+
+        .pet-card:hover .pet-avatar { animation: petBounce 0.6s ease infinite; }
+
+        @keyframes petBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .pet-avatar-body {
+            width: 100%; height: 100%;
+            border-radius: 50% 50% 45% 45%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pet-avatar-ear {
+            position: absolute;
+            width: 14px; height: 14px;
+            top: -6px;
+            border-radius: 50% 50% 10% 10%;
+            z-index: -1;
+        }
+        .pet-avatar-ear.left { left: 5px; transform: rotate(-20deg); }
+        .pet-avatar-ear.right { right: 5px; transform: rotate(20deg); }
+
+        .pet-avatar-eye {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            position: absolute;
+            top: 18px;
+            animation: avatarBlink 3s infinite;
+        }
+        .pet-avatar-eye.left { left: 12px; }
+        .pet-avatar-eye.right { right: 12px; }
+
+        @keyframes avatarBlink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+
+        .pet-avatar-mouth {
+            position: absolute;
+            width: 8px; height: 4px;
+            border-bottom: 2px solid;
+            border-left: 2px solid;
+            border-right: 2px solid;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            top: 26px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .pet-avatar-blush {
+            position: absolute;
+            width: 8px; height: 4px;
+            border-radius: 50%;
+            top: 28px;
+            filter: blur(1px);
+            opacity: 0.7;
+        }
+        .pet-avatar-blush.left { left: 6px; }
+        .pet-avatar-blush.right { right: 6px; }
+
+        .pet-name {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            background: var(--name-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pet-type {
+            font-size: 0.75rem;
+            color: #b86080;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .pet-description {
+            text-align: center;
+            color: #905070;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .pet-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pet-tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+            border: 1px solid rgba(228,68,122,0.2);
+            color: #b06080;
+            background: rgba(255,200,215,0.25);
+            transition: all 0.3s;
+        }
+
+        .pet-card:hover .pet-tag {
+            border-color: var(--tag-color);
+            color: var(--tag-text, var(--tag-color));
+            background: var(--tag-bg);
+        }
+
+        /* ===== FEATURED BANNER ===== */
+        .featured-section {
+            width: 100%;
+            max-width: 1400px;
+            padding: 40px 20px 100px;
+        }
+
+        .featured-banner {
+            background: linear-gradient(135deg, #fff5f7, #ffe8ee, #ffdce5);
+            border: 1.5px solid rgba(228,68,122,0.15);
+            border-radius: 28px;
+            padding: 60px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(228,68,122,0.1);
+        }
+
+        .featured-banner::before {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,130,170,0.15), transparent);
+            top: -100px; right: -50px;
+            border-radius: 50%;
+        }
+
+        .featured-banner::after {
+            content: '';
+            position: absolute;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(255,150,180,0.15), transparent);
+            bottom: -80px; left: -30px;
+            border-radius: 50%;
+        }
+
+        .featured-emoji-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .featured-emoji-row span { animation: floatEmoji 3s infinite ease-in-out; }
+        .featured-emoji-row span:nth-child(2) { animation-delay: 0.3s; }
+        .featured-emoji-row span:nth-child(3) { animation-delay: 0.6s; }
+        .featured-emoji-row span:nth-child(4) { animation-delay: 0.9s; }
+        .featured-emoji-row span:nth-child(5) { animation-delay: 1.2s; }
+
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .featured-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            color: #c0406a;
+            margin-bottom: 12px;
+        }
+
+        .featured-desc {
+            color: #905070;
+            max-width: 500px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff6b8a, #e8447a);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            z-index: 2;
+            box-shadow: 0 4px 20px rgba(232,68,122,0.35);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 40px rgba(232,68,122,0.45);
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.5s;
+        }
+
+        .cta-button:hover::after { width: 300px; height: 300px; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1.5px solid rgba(228,68,122,0.1);
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, transparent, rgba(255,220,230,0.3));
+        }
+
+        .footer-brand {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #e8447a, #d42060, #c0406a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .footer-sub { color: #b06080; font-size: 0.8rem; letter-spacing: 2px; opacity: 0.6; }
+        .footer-hearts { margin-top: 15px; font-size: 0.9rem; opacity: 0.7; }
+
+        .glitch-wrapper { position: relative; display: inline-block; }
+        .glitch-text { animation: gentleGlitch 8s infinite; }
+
+        @keyframes gentleGlitch {
+            0%, 95%, 100% { transform: none; opacity: 1; }
+            96% { transform: translate(-1px, 0.5px); opacity: 0.9; }
+            97% { transform: translate(1px, -0.5px); }
+            98% { transform: none; opacity: 1; }
+        }
+
+        .reveal-line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e8447a, transparent);
+            margin: 20px auto;
+            animation: revealPulse 3s infinite;
+        }
+
+        @keyframes revealPulse {
+            0%, 100% { width: 60px; opacity: 0.4; }
+            50% { width: 120px; opacity: 0.8; }
+        }
+
+        .card-ribbon {
+            position: absolute;
+            top: 14px; left: -6px;
+            background: linear-gradient(135deg, #ff6b8a, #e8447a);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 12px 3px 8px;
+            letter-spacing: 1px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 2px 8px rgba(232,68,122,0.3);
+            z-index: 5;
+        }
+
+        .card-ribbon::before {
+            content: '';
+            position: absolute;
+            left: 0; bottom: -5px;
+            width: 6px; height: 5px;
+            background: #b8305a;
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+        }
+
+        .card-ribbon.new {
+            background: linear-gradient(135deg, #ff9a44, #ff6b8a);
+            box-shadow: 0 2px 8px rgba(255,154,68,0.3);
+        }
+
+        .card-ribbon.new::before { background: #c05020; }
+
+        /* ===== RANDOMIX SPECIAL CARD ===== */
+        .randomix-display {
+            width: 110px;
+            height: 110px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Style switcher dots */
+        .style-dots {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px;
+            justify-content: center;
+        }
+
+        .style-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .pet-card:hover .style-dot { animation: dotPulse 0.6s ease infinite; }
+        .pet-card:hover .style-dot:nth-child(2) { animation-delay: 0.15s; }
+        .pet-card:hover .style-dot:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        /* ===== RANDOMIX LIVE SWITCHER PREVIEW ===== */
+        .randomix-preview-wrap {
+            position: relative;
+            width: 70px; height: 56px;
+            z-index: 2;
+        }
+
+        /* Ghost versions of the 3 styles stacked */
+        .rx-ghost {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 50% 50% 45% 45%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .rx-ghost.active { opacity: 1; }
+        .rx-ghost.exiting { opacity: 0; }
+
+        @media (max-width: 768px) {
+            .pets-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+            .featured-banner { padding: 40px 20px; }
+        }
+
+        html { scroll-behavior: smooth; }
+
+        ::selection { background: rgba(232,68,122,0.2); color: #c0406a; }
+    </style>
+</head>
+<body>
+
+    <div class="shapes-container" id="shapesContainer"></div>
+    <div id="floatingParticles"></div>
+    <div id="petalContainer"></div>
+
+    <div class="poster">
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-badge">✦ A New Collection Awakens ✦</div>
+            <h1 class="main-title">
+                <span class="line1 glitch-wrapper"><span class="glitch-text">Mochi Pets</span></span>
+                <span class="line2">Collection</span>
+            </h1>
+            <p class="subtitle">~ tiny companions, infinite charm ~</p>
+            <div class="reveal-line"></div>
+            <div class="suspense-tagline"><span id="typewriter"></span></div>
+            <div class="scroll-hint">
+                <span>DISCOVER</span>
+                <div class="arrow"></div>
+            </div>
+        </section>
+
+        <!-- PETS GRID -->
+        <section class="pets-section">
+            <div class="section-header">
+                <h2>Meet The Collection</h2>
+                <p>Each one has a soul. Each one chooses you.</p>
+            </div>
+
+            <div class="pets-grid">
+
+                <!-- #001 PINKIE -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(255,130,160,0.15); --card-border: rgba(255,130,160,0.45); --card-shadow: rgba(255,130,160,0.2); --ring-color: #ff8faa; --name-gradient: linear-gradient(135deg, #e8447a, #d42060); --tag-color: #e8447a; --tag-bg: rgba(255,130,160,0.15); --avatar-shadow: rgba(255,130,160,0.3);">
+                    <span class="card-number">#001</span>
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <div class="pet-avatar">
+                            <div class="pet-avatar-body" style="background: radial-gradient(circle at 30% 30%, #ffe8ee, #ffc0d0); border: 2.5px solid #ff8faa; box-shadow: 0 4px 15px rgba(255,143,170,0.4);">
+                                <div class="pet-avatar-ear left" style="background: #ffd0dd; border: 2.5px solid #ff8faa;"></div>
+                                <div class="pet-avatar-ear right" style="background: #ffd0dd; border: 2.5px solid #ff8faa;"></div>
+                                <div class="pet-avatar-eye left" style="background: #5a3040;"></div>
+                                <div class="pet-avatar-eye right" style="background: #5a3040;"></div>
+                                <div class="pet-avatar-mouth" style="border-color: #5a3040;"></div>
+                                <div class="pet-avatar-blush left" style="background: #ff8faa;"></div>
+                                <div class="pet-avatar-blush right" style="background: #ff8faa;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pet-name">Pinkie</div>
+                    <div class="pet-type">The Original</div>
+                    <p class="pet-description">The one that started it all. Soft as a cloud, sweet as a dream. Pinkie follows your every move with sparkling trails of magic. ✨</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">🌸 Classic</span>
+                        <span class="pet-tag">✨ Sparkles</span>
+                        <span class="pet-tag">💖 Sweet</span>
+                    </div>
+                </div>
+
+                <!-- #002 MUNNI -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(100,60,80,0.1); --card-border: rgba(140,100,120,0.4); --card-shadow: rgba(100,60,80,0.15); --ring-color: #a08090; --name-gradient: linear-gradient(135deg, #6a4a5a, #4a2a3a); --tag-color: #8a6a7a; --tag-bg: rgba(140,100,120,0.1); --avatar-shadow: rgba(80,40,60,0.3);">
+                    <span class="card-number">#002</span>
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <div class="pet-avatar">
+                            <div class="pet-avatar-body" style="background: radial-gradient(circle at 30% 30%, #6a4a5a, #2a1020); border: 2.5px solid #5a3a4a; box-shadow: 0 4px 15px rgba(80,40,60,0.4);">
+                                <div class="pet-avatar-ear left" style="background: #3a1a2a; border: 2.5px solid #5a3a4a;"></div>
+                                <div class="pet-avatar-ear right" style="background: #3a1a2a; border: 2.5px solid #5a3a4a;"></div>
+                                <div class="pet-avatar-eye left" style="background: #ffd0dd;"></div>
+                                <div class="pet-avatar-eye right" style="background: #ffd0dd;"></div>
+                                <div class="pet-avatar-mouth" style="border-color: #ffd0dd;"></div>
+                                <div class="pet-avatar-blush left" style="background: rgba(255,105,150,0.7);"></div>
+                                <div class="pet-avatar-blush right" style="background: rgba(255,105,150,0.7);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pet-name">Munni</div>
+                    <div class="pet-type">The Shadow</div>
+                    <p class="pet-description">Born from the void. Munni moves silently through the dark, leaving trails of starlight and golden sparks behind. 🐧</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">🌙 Dark</span>
+                        <span class="pet-tag">⭐ Starlight</span>
+                        <span class="pet-tag">🐧 Mysterious</span>
+                    </div>
+                </div>
+
+                <!-- #003 BOYS BLUE -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(140,180,220,0.15); --card-border: rgba(140,180,220,0.45); --card-shadow: rgba(140,180,220,0.2); --ring-color: #a0c8e8; --name-gradient: linear-gradient(135deg, #6aa8d0, #4a90b8); --tag-color: #5a9ac0; --tag-bg: rgba(140,180,220,0.12); --avatar-shadow: rgba(100,160,210,0.3);">
+                    <span class="card-number">#003</span>
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <div class="pet-avatar">
+                            <div class="pet-avatar-body" style="background: radial-gradient(circle at 30% 30%, #d8ecf8, #a0cce8); border: 2.5px solid #78b8d8; box-shadow: 0 4px 15px rgba(120,184,216,0.4);">
+                                <div class="pet-avatar-ear left" style="background: #bcdcf0; border: 2.5px solid #78b8d8; border-radius: 2px 8px 0 0;"></div>
+                                <div class="pet-avatar-ear right" style="background: #bcdcf0; border: 2.5px solid #78b8d8; border-radius: 8px 2px 0 0;"></div>
+                                <div class="pet-avatar-eye left" style="background: #3a4a5a;"></div>
+                                <div class="pet-avatar-eye right" style="background: #3a4a5a;"></div>
+                                <div class="pet-avatar-mouth" style="border-color: #3a4a5a;"></div>
+                                <div class="pet-avatar-blush left" style="background: #88c0e0;"></div>
+                                <div class="pet-avatar-blush right" style="background: #88c0e0;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pet-name">Boys Blue</div>
+                    <div class="pet-type">The Storm</div>
+                    <p class="pet-description">Electric energy in a tiny body. Boys Blue crackles with lightning and leaves wind trails in its wake. ⋆.˚🦋༘⋆</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">🦋 Electric</span>
+                        <span class="pet-tag">💨 Swift</span>
+                        <span class="pet-tag">🌀 Energetic</span>
+                    </div>
+                </div>
+
+                <!-- #004 SAKURA -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(255,120,160,0.15); --card-border: rgba(255,140,170,0.45); --card-shadow: rgba(255,140,170,0.2); --ring-color: #ff90aa; --name-gradient: linear-gradient(135deg, #ff90aa, #e05080); --tag-color: #e86090; --tag-bg: rgba(255,140,170,0.12); --avatar-shadow: rgba(255,140,170,0.4);">
+                    <span class="card-number">#004</span>
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <div class="pet-avatar">
+                            <div class="pet-avatar-body" style="background: radial-gradient(circle at 30% 30%, #ffe0ea, #ffaac5); border: 2.5px solid #ff90aa; box-shadow: 0 4px 15px rgba(255,144,170,0.4);">
+                                <div class="pet-avatar-ear left" style="background: #ffc0d5; border: 2.5px solid #ff90aa; border-radius: 50px 50px 0 50px; width: 12px; height: 12px; top: -4px;"></div>
+                                <div class="pet-avatar-ear right" style="background: #ffc0d5; border: 2.5px solid #ff90aa; border-radius: 50px 50px 50px 0; width: 12px; height: 12px; top: -4px;"></div>
+                                <div class="pet-avatar-eye left" style="background: #5a3040;"></div>
+                                <div class="pet-avatar-eye right" style="background: #5a3040;"></div>
+                                <div class="pet-avatar-mouth" style="border-color: #5a3040;"></div>
+                                <div class="pet-avatar-blush left" style="background: #ff70a0;"></div>
+                                <div class="pet-avatar-blush right" style="background: #ff70a0;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pet-name">Sakura</div>
+                    <div class="pet-type">The Bloom</div>
+                    <p class="pet-description">A gentle spirit wrapped in cherry blossoms. Every step scatters petals that drift like spring rain. 🌸</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">🌸 Petals</span>
+                        <span class="pet-tag">✿ Gentle</span>
+                        <span class="pet-tag">💮 Elegant</span>
+                    </div>
+                </div>
+
+                <!-- #005 AI DRONE -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(120,160,200,0.12); --card-border: rgba(120,160,200,0.4); --card-shadow: rgba(120,160,200,0.18); --ring-color: #88b0d0; --name-gradient: linear-gradient(135deg, #6898c0, #4878a0); --tag-color: #5a90b8; --tag-bg: rgba(120,160,200,0.1); --avatar-shadow: rgba(80,130,180,0.3);">
+                    <span class="card-number">#005</span>
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <div class="pet-avatar">
+                            <div class="pet-avatar-body" style="background: radial-gradient(circle at 30% 30%, #d8dce8, #a8b0c8); border: 2.5px solid #88a0c0; border-radius: 50%; box-shadow: 0 0 15px rgba(100,140,190,0.3), 0 4px 15px rgba(100,140,190,0.3);">
+                                <div style="width: 20px; height: 20px; background: linear-gradient(135deg, #88b8d8, #5890b8); border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.5); position: relative;">
+                                    <div style="position: absolute; width: 8px; height: 8px; background: #fff; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+                                </div>
+                                <div style="position: absolute; width: 4px; height: 12px; background: #88b8d8; top: -8px; left: 50%; transform: translateX(-50%); border-radius: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pet-name">AI Drone</div>
+                    <div class="pet-type">The Debugger</div>
+                    <p class="pet-description">Not cute — but undeniably cool. This cybernetic sentinel patrols autonomously, scanning for bugs and raining code. 👨‍💻</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">👨‍💻 AI</span>
+                        <span class="pet-tag">🦋 Cyber</span>
+                        <span class="pet-tag">🐛 Debugger</span>
+                    </div>
+                </div>
+
+                <!-- #006 BILAI -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(255,170,190,0.15); --card-border: rgba(255,170,190,0.45); --card-shadow: rgba(255,170,190,0.2); --ring-color: #ffa8be; --name-gradient: linear-gradient(135deg, #ffa8be, #e87898); --tag-color: #e88098; --tag-bg: rgba(255,170,190,0.12); --avatar-shadow: rgba(255,170,190,0.4);">
+                    <span class="card-number">#006</span>
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <div class="pet-avatar">
+                            <div class="pet-avatar-body" style="background: radial-gradient(circle at 30% 30%, #ffe8ee, #ffd0dd, #ffc0d0); border: 2.5px solid #ffa8be; border-radius: 45% 45% 42% 42%; position: relative; box-shadow: 0 4px 15px rgba(255,168,190,0.4);">
+                                <div class="pet-avatar-ear left" style="background: #ffd8e5; border: 2.5px solid #ffa8be; border-radius: 3px 12px 0 0; width: 14px; height: 16px; top: -9px; left: 3px; position: absolute; overflow: hidden;">
+                                    <div style="position: absolute; bottom: 0; left: 3px; width: 7px; height: 9px; background: #ff90aa; border-radius: 3px 8px 0 0;"></div>
+                                </div>
+                                <div class="pet-avatar-ear right" style="background: #ffd8e5; border: 2.5px solid #ffa8be; border-radius: 12px 3px 0 0; width: 14px; height: 16px; top: -9px; right: 3px; position: absolute; overflow: hidden;">
+                                    <div style="position: absolute; bottom: 0; right: 3px; width: 7px; height: 9px; background: #ff90aa; border-radius: 8px 3px 0 0;"></div>
+                                </div>
+                                <div style="position: absolute; width: 8px; height: 10px; background: #5a3040; border-radius: 50%; top: 14px; left: 9px; animation: avatarBlink 5s infinite;">
+                                    <div style="position:absolute; top:1.5px; left:1.5px; width:3.5px; height:3.5px; background:#fff; border-radius:50%;"></div>
+                                </div>
+                                <div style="position: absolute; width: 8px; height: 10px; background: #5a3040; border-radius: 50%; top: 14px; right: 9px; animation: avatarBlink 5s infinite;">
+                                    <div style="position:absolute; top:1.5px; left:1.5px; width:3.5px; height:3.5px; background:#fff; border-radius:50%;"></div>
+                                </div>
+                                <div style="position: absolute; width: 4px; height: 3px; background: #ff80a0; border-radius: 50%; top: 22px; left: 50%; transform: translateX(-50%);"></div>
+                                <div style="position: absolute; top: 24px; left: 50%; transform: translateX(-50%); width: 12px; height: 5px;">
+                                    <div style="position:absolute; width:6px; height:4px; border:1.5px solid transparent; border-bottom-color:#5a3040; border-radius:50%; left:-1px;"></div>
+                                    <div style="position:absolute; width:6px; height:4px; border:1.5px solid transparent; border-bottom-color:#5a3040; border-radius:50%; right:-1px;"></div>
+                                </div>
+                                <div style="background:#ff90aa; width:8px; height:4px; position:absolute; top:26px; left:3px; border-radius:50%; filter:blur(1px); opacity:0.85;"></div>
+                                <div style="background:#ff90aa; width:8px; height:4px; position:absolute; top:26px; right:3px; border-radius:50%; filter:blur(1px); opacity:0.85;"></div>
+                                <div style="position:absolute; width:8px; height:1.2px; background:#c8909a; border-radius:2px; opacity:0.7; top:22px; left:-4px; transform:rotate(12deg);"></div>
+                                <div style="position:absolute; width:8px; height:1.2px; background:#c8909a; border-radius:2px; opacity:0.7; top:25px; left:-4px; transform:rotate(-5deg);"></div>
+                                <div style="position:absolute; width:8px; height:1.2px; background:#c8909a; border-radius:2px; opacity:0.7; top:22px; right:-4px; transform:rotate(-12deg);"></div>
+                                <div style="position:absolute; width:8px; height:1.2px; background:#c8909a; border-radius:2px; opacity:0.7; top:25px; right:-4px; transform:rotate(5deg);"></div>
+                                <div style="position:absolute; bottom:-4px; left:8px; width:9px; height:6px; background:#ffe0ea; border:1.5px solid #ffa8be; border-radius:5px 5px 4px 4px; z-index:2;"></div>
+                                <div style="position:absolute; bottom:-4px; right:8px; width:9px; height:6px; background:#ffe0ea; border:1.5px solid #ffa8be; border-radius:5px 5px 4px 4px; z-index:2;"></div>
+                                <div style="position:absolute; width:8px; height:22px; background:#ffe0ea; border:1.5px solid #ffa8be; border-radius:10px; bottom:4px; right:-7px; transform-origin:bottom center; transform:rotate(12deg); z-index:-1;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pet-name">Bilai</div>
+                    <div class="pet-type">The Companion</div>
+                    <p class="pet-description">The most detailed pet in the collection. Complete with whiskers, paws, and a swishing tail. Bilai is pure love. 🐾</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">🐾 Detailed</span>
+                        <span class="pet-tag">💕 Wholesome</span>
+                        <span class="pet-tag">🐱 Cat</span>
+                    </div>
+                </div>
+
+                <!-- #007 AYLA -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(232,68,122,0.18); --card-border: rgba(232,68,122,0.5); --card-shadow: rgba(232,68,122,0.25); --ring-color: #e8447a; --name-gradient: linear-gradient(135deg, #e8447a, #d42060, #ff6b8a); --tag-color: #e8447a; --tag-bg: rgba(232,68,122,0.12); --avatar-shadow: rgba(232,68,122,0.4);">
+                    <div class="card-ribbon">★ ULTIMATE</div>
+                    <span class="card-number">#007 ★</span>
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <div class="pet-avatar" style="width: 50px; height: 40px;">
+                            <div class="pet-avatar-body" style="width:100%; height:100%; background: linear-gradient(135deg, #ffe8ee 0%, #ffd0dd 100%); border: 2px solid #ff8faa; border-radius: 50% 50% 45% 45%; position: relative; box-shadow: inset -2px -2px 5px rgba(255,130,160,0.3), inset 2px 2px 5px rgba(255,240,245,0.9), 0 4px 12px rgba(255,130,160,0.4);">
+                                <div style="position:absolute; width:11px; height:16px; background:linear-gradient(135deg,#ffe0ea,#ffd0dd); border:2px solid #ff8faa; border-radius:50% 50% 20% 20%; top:-10px; left:4px; transform-origin:bottom center; transform:rotate(-15deg); z-index:-1; overflow:hidden;">
+                                    <div style="position:absolute; width:5px; height:9px; background:#ff90aa; border-radius:50%; top:2px; left:50%; transform:translateX(-50%);"></div>
+                                </div>
+                                <div style="position:absolute; width:11px; height:16px; background:linear-gradient(135deg,#ffe0ea,#ffd0dd); border:2px solid #ff8faa; border-radius:50% 50% 20% 20%; top:-10px; right:4px; transform-origin:bottom center; transform:rotate(15deg); z-index:-1; overflow:hidden;">
+                                    <div style="position:absolute; width:5px; height:9px; background:#ff90aa; border-radius:50%; top:2px; left:50%; transform:translateX(-50%);"></div>
+                                </div>
+                                <div style="position:absolute; width:5px; height:5px; background:#5a3040; border-radius:50%; top:14px; left:10px; animation:avatarBlink 3.5s infinite;"></div>
+                                <div style="position:absolute; width:5px; height:5px; background:#5a3040; border-radius:50%; top:14px; right:10px; animation:avatarBlink 3.5s infinite;"></div>
+                                <div style="position:absolute; width:8px; height:4px; background:#ff8faa; border-radius:50%; top:21px; left:5px; filter:blur(1px); opacity:0.85;"></div>
+                                <div style="position:absolute; width:8px; height:4px; background:#ff8faa; border-radius:50%; top:21px; right:5px; filter:blur(1px); opacity:0.85;"></div>
+                                <div style="position:absolute; width:6px; height:3px; border:1.5px solid #5a3040; border-top:none; border-radius:0 0 8px 8px; top:21px; left:50%; transform:translateX(-50%);"></div>
+                                <div style="position:absolute; width:9px; height:6px; background:#ffe0ea; border:1.5px solid #ff8faa; border-radius:50%; bottom:-3px; left:7px; z-index:2;"></div>
+                                <div style="position:absolute; width:9px; height:6px; background:#ffe0ea; border:1.5px solid #ff8faa; border-radius:50%; bottom:-3px; right:7px; z-index:2;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pet-name">✦ Ayla ✦</div>
+                    <div class="pet-type">Ultimate Edition</div>
+                    <p class="pet-description">The pinnacle. Full AI personality: follows, sleeps, cries, gets exhausted, and bounces with joy when petted. A living soul. 💎</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">💎 Ultimate</span>
+                        <span class="pet-tag">🧠 AI</span>
+                        <span class="pet-tag">😭 Emotions</span>
+                        <span class="pet-tag">💖 Alive</span>
+                    </div>
+                </div>
+
+                <!-- #008 RANDOMIX -->
+                <div class="pet-card"
+                     style="--card-glow: rgba(255,154,68,0.15); --card-border: rgba(255,154,68,0.45); --card-shadow: rgba(255,154,68,0.2); --ring-color: #ffaa55; --name-gradient: linear-gradient(135deg, #ff9a44, #e8447a, #ffcc00); --tag-color: #e87040; --tag-bg: rgba(255,154,68,0.12); --avatar-shadow: rgba(255,154,68,0.35);">
+                    <div class="card-ribbon new">✦ NEW</div>
+                    <span class="card-number">#008</span>
+
+                    <div class="pet-display">
+                        <div class="pet-ring"></div><div class="pet-ring"></div>
+                        <!-- Static Randomix display - cycling through 3 style faces -->
+                        <div class="randomix-preview-wrap" id="rxPreview">
+                            <!-- CAT face -->
+                            <div class="rx-ghost active" id="rxCat" style="background: radial-gradient(circle at 30% 30%, #f7f1e3, #e1d2ac); border: 2px solid #d8c39e; width:60px; height:48px; border-radius:50% 50% 45% 45%;">
+                                <!-- Cat ears -->
+                                <div style="position:absolute; width:10px; height:14px; background:#f7f1e3; border:1.5px solid #d8c39e; border-radius:50% 50% 10% 10%; top:-8px; left:5px; transform:rotate(-18deg); z-index:-1;"></div>
+                                <div style="position:absolute; width:10px; height:14px; background:#f7f1e3; border:1.5px solid #d8c39e; border-radius:50% 50% 10% 10%; top:-8px; right:5px; transform:rotate(18deg); z-index:-1;"></div>
+                                <!-- Eyes -->
+                                <div style="position:absolute; width:4px; height:4px; background:#555; border-radius:50%; top:16px; left:10px; animation:avatarBlink 3s infinite;"></div>
+                                <div style="position:absolute; width:4px; height:4px; background:#555; border-radius:50%; top:16px; right:10px; animation:avatarBlink 3s infinite;"></div>
+                                <!-- Triangle nose -->
+                                <div style="position:absolute; top:21px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:2.5px solid transparent; border-right:2.5px solid transparent; border-top:3px solid #d8c39e;"></div>
+                                <!-- Mouth -->
+                                <div style="position:absolute; width:6px; height:3px; border:1.2px solid #555; border-top:none; border-radius:0 0 8px 8px; top:23px; left:50%; transform:translateX(-50%);"></div>
+                                <!-- Whiskers -->
+                                <div style="position:absolute; width:7px; height:1px; background:#888; top:20px; left:0; transform:rotate(-8deg); opacity:0.6;"></div>
+                                <div style="position:absolute; width:7px; height:1px; background:#888; top:22px; left:0; transform:rotate(5deg); opacity:0.6;"></div>
+                                <div style="position:absolute; width:7px; height:1px; background:#888; top:20px; right:0; transform:rotate(8deg); opacity:0.6;"></div>
+                                <div style="position:absolute; width:7px; height:1px; background:#888; top:22px; right:0; transform:rotate(-5deg); opacity:0.6;"></div>
+                                <!-- Blush -->
+                                <div style="position:absolute; width:7px; height:3px; background:#c9a87a; border-radius:50%; top:24px; left:5px; filter:blur(1px); opacity:0.5;"></div>
+                                <div style="position:absolute; width:7px; height:3px; background:#c9a87a; border-radius:50%; top:24px; right:5px; filter:blur(1px); opacity:0.5;"></div>
+                            </div>
+
+                            <!-- KURUMI face -->
+                            <div class="rx-ghost" id="rxKurumi" style="background: radial-gradient(circle at 30% 30%, #333, #000); border: 2px solid #333; width:60px; height:48px; border-radius:50% 50% 45% 45%;">
+                                <!-- Round dark ears -->
+                                <div style="position:absolute; width:10px; height:10px; background:#333; border:1.5px solid #222; border-radius:50%; top:-5px; left:4px; transform:rotate(-15deg); z-index:-1;"></div>
+                                <div style="position:absolute; width:10px; height:10px; background:#333; border:1.5px solid #222; border-radius:50%; top:-5px; right:4px; transform:rotate(15deg); z-index:-1;"></div>
+                                <!-- Skull emoji above -->
+                                <div style="position:absolute; top:-9px; left:50%; transform:translateX(-50%); font-size:9px; line-height:1;">💀</div>
+                                <!-- Pink eyes -->
+                                <div style="position:absolute; width:4px; height:4px; background:pink; border-radius:50%; top:16px; left:10px; animation:avatarBlink 4s infinite;"></div>
+                                <div style="position:absolute; width:4px; height:4px; background:pink; border-radius:50%; top:16px; right:10px; animation:avatarBlink 4s infinite;"></div>
+                                <!-- Pink mouth -->
+                                <div style="position:absolute; width:6px; height:3px; border:1.2px solid pink; border-top:none; border-radius:0 0 8px 8px; top:23px; left:50%; transform:translateX(-50%);"></div>
+                                <!-- Pink blush -->
+                                <div style="position:absolute; width:7px; height:3px; background:pink; border-radius:50%; top:24px; left:5px; filter:blur(2px); opacity:0.45;"></div>
+                                <div style="position:absolute; width:7px; height:3px; background:pink; border-radius:50%; top:24px; right:5px; filter:blur(2px); opacity:0.45;"></div>
+                            </div>
+
+                            <!-- PIKACHU face -->
+                            <div class="rx-ghost" id="rxPika" style="background: radial-gradient(circle at 30% 30%, #ffe066, #ffcc00); border: 2px solid #e6b800; width:60px; height:48px; border-radius:50% 50% 45% 45%;">
+                                <!-- Long pointy ears with black tips -->
+                                <div style="position:absolute; width:7px; height:18px; background:#ffcc00; border:1.5px solid #e6b800; border-radius:50% 50% 0 0; top:-14px; left:5px; transform:rotate(-22deg); z-index:-1; overflow:hidden;">
+                                    <div style="position:absolute; top:0; left:0; width:100%; height:35%; background:#222; border-radius:50% 50% 0 0;"></div>
+                                </div>
+                                <div style="position:absolute; width:7px; height:18px; background:#ffcc00; border:1.5px solid #e6b800; border-radius:50% 50% 0 0; top:-14px; right:5px; transform:rotate(22deg); z-index:-1; overflow:hidden;">
+                                    <div style="position:absolute; top:0; left:0; width:100%; height:35%; background:#222; border-radius:50% 50% 0 0;"></div>
+                                </div>
+                                <!-- Dark eyes -->
+                                <div style="position:absolute; width:4px; height:4px; background:#2a2a2a; border-radius:50%; top:16px; left:10px; animation:avatarBlink 3.5s infinite;"></div>
+                                <div style="position:absolute; width:4px; height:4px; background:#2a2a2a; border-radius:50%; top:16px; right:10px; animation:avatarBlink 3.5s infinite;"></div>
+                                <!-- Red circular cheeks -->
+                                <div style="position:absolute; width:8px; height:8px; background:red; border-radius:50%; top:20px; left:4px; opacity:0.9;"></div>
+                                <div style="position:absolute; width:8px; height:8px; background:red; border-radius:50%; top:20px; right:4px; opacity:0.9;"></div>
+                                <!-- Mouth -->
+                                <div style="position:absolute; width:6px; height:3px; border:1.2px solid #555; border-top:1px solid #555; border-radius:0; top:23px; left:50%; transform:translateX(-50%);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Style indicator dots -->
+                    <div class="style-dots">
+                        <div class="style-dot" style="background:#e1d2ac;"></div>
+                        <div class="style-dot" style="background:#333;"></div>
+                        <div class="style-dot" style="background:#ffcc00;"></div>
+                    </div>
+
+                    <div class="pet-name" style="margin-top:14px;">Randomix</div>
+                    <div class="pet-type">The Shapeshifter</div>
+                    <p class="pet-description">Three souls in one body. Follows your cursor everywhere. <strong>Double-click</strong> it to shift between Cat 🐱, Kurumi 💀, and Pikachu ⚡ forms — each with unique particles!</p>
+                    <div class="pet-tags">
+                        <span class="pet-tag">🐱 Cat</span>
+                        <span class="pet-tag">💀 Kurumi</span>
+                        <span class="pet-tag">⚡ Pikachu</span>
+                        <span class="pet-tag">🎭 3-in-1</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FEATURED BANNER -->
+        <section class="featured-section">
+            <div class="featured-banner">
+                <div class="featured-emoji-row">
+                    <span>🌸</span><span>🐧</span><span>🦋</span><span>🎭</span><span>💖</span>
+                </div>
+                <h3 class="featured-title">Paste Any Script Into Your Console</h3>
+                <p class="featured-desc">Each Mochi Pet is a self-contained JavaScript snippet. Open DevTools → Console → Paste → Enter. Watch your new companion come alive on any webpage.</p>
+                <button class="cta-button" onclick="alert('Open DevTools (F12) → Console → Paste a pet script → Press Enter! 🌸')">
+                    ✨ How To Adopt ✨
+                </button>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-brand">IncognitoM</div>
+            <div class="footer-sub">CRAFTED WITH LOVE & CODE</div>
+            <div class="footer-hearts">🩷 🤍 🩷 🤍 🩷</div>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== BACKGROUND SHAPES =====
+        (function() {
+            const container = document.getElementById('shapesContainer');
+            const colors = [
+                'rgba(255,150,180,0.1)','rgba(255,180,200,0.12)',
+                'rgba(255,130,160,0.08)','rgba(255,200,215,0.14)',
+                'rgba(255,160,185,0.09)','rgba(255,120,150,0.06)'
+            ];
+            for (let i = 0; i < 30; i++) {
+                const shape = document.createElement('div');
+                shape.className = 'soft-shape';
+                const size = 40 + Math.random() * 200;
+                shape.style.width = size + 'px';
+                shape.style.height = size + 'px';
+                shape.style.left = Math.random() * 100 + '%';
+                shape.style.top = Math.random() * 100 + '%';
+                shape.style.background = colors[Math.floor(Math.random() * colors.length)];
+                shape.style.setProperty('--duration', (8 + Math.random() * 12) + 's');
+                shape.style.setProperty('--max-opacity', (0.3 + Math.random() * 0.5).toString());
+                shape.style.setProperty('--drift-y', (-20 - Math.random() * 30) + 'px');
+                shape.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(shape);
+            }
+        })();
+
+        // ===== FLOATING PARTICLES =====
+        (function() {
+            const container = document.getElementById('floatingParticles');
+            const emojis = ['✨','🌸','💖','♡','🩷','💫','🦋','🌷','💕','✧','🎀'];
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div');
+                p.className = 'float-particle';
+                p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                p.style.left = Math.random() * 100 + '%';
+                p.style.setProperty('--float-duration', (14 + Math.random() * 20) + 's');
+                p.style.setProperty('--size', (12 + Math.random() * 14) + 'px');
+                p.style.setProperty('--drift', (Math.random() * 100 - 50) + 'px');
+                p.style.animationDelay = (Math.random() * 15) + 's';
+                container.appendChild(p);
+            }
+        })();
+
+        // ===== FALLING PETALS =====
+        (function() {
+            const container = document.getElementById('petalContainer');
+            const petalColors = ['#ffb0c8','#ffa0b8','#ff90aa','#ffc0d5','#ffd0e0','#ff80a0'];
+            for (let i = 0; i < 22; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const inner = document.createElement('div');
+                inner.className = 'petal-inner';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.setProperty('--fall-duration', (10 + Math.random() * 15) + 's');
+                petal.style.setProperty('--delay', (Math.random() * 20) + 's');
+                petal.style.setProperty('--petal-size', (5 + Math.random() * 8) + 'px');
+                petal.style.setProperty('--petal-color', petalColors[Math.floor(Math.random() * petalColors.length)]);
+                petal.style.setProperty('--petal-opacity', (0.35 + Math.random() * 0.4).toString());
+                petal.style.setProperty('--petal-drift', (Math.random() * 80 - 40) + 'px');
+                petal.style.setProperty('--spin-duration', (3 + Math.random() * 5) + 's');
+                petal.appendChild(inner);
+                container.appendChild(petal);
+            }
+        })();
+
+        // ===== TYPEWRITER =====
+        (function() {
+            const text = "Who will be your companion?";
+            const el = document.getElementById('typewriter');
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    el.textContent += text[i++];
+                    setTimeout(type, 80 + Math.random() * 60);
+                }
+            }
+            setTimeout(type, 2500);
+        })();
+
+        // ===== SCROLL REVEAL =====
+        (function() {
+            const cards = document.querySelectorAll('.pet-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => entry.target.classList.add('visible'), index * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            cards.forEach(card => observer.observe(card));
+        })();
+
+        // ===== CARD GLOW FOLLOW =====
+        (function() {
+            document.querySelectorAll('.pet-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    card.style.setProperty('--glow-x', ((e.clientX - rect.left) / rect.width * 100) + '%');
+                    card.style.setProperty('--glow-y', ((e.clientY - rect.top) / rect.height * 100) + '%');
+                });
+            });
+        })();
+
+        // ===== CURSOR SPARKLE =====
+        (function() {
+            let lastSpawn = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastSpawn < 100) return;
+                lastSpawn = now;
+                const sparkle = document.createElement('div');
+                sparkle.textContent = ['✨','♡','·','✧','💖','🩷'][Math.floor(Math.random() * 6)];
+                sparkle.style.cssText = `
+                    position:fixed; left:${e.clientX}px; top:${e.clientY}px;
+                    pointer-events:none; z-index:999999;
+                    font-size:${8 + Math.random() * 8}px;
+                    color:rgba(232,68,122,${0.3 + Math.random() * 0.4});
+                    transition:all 0.8s ease-out; opacity:1;
+                `;
+                document.body.appendChild(sparkle);
+                requestAnimationFrame(() => {
+                    sparkle.style.transform = `translateY(${-15 - Math.random() * 20}px) scale(0)`;
+                    sparkle.style.opacity = '0';
+                });
+                setTimeout(() => sparkle.remove(), 800);
+            });
+        })();
+
+        // ===== RANDOMIX CARD PREVIEW CYCLER (static card animation) =====
+        (function() {
+            const faces = [
+                document.getElementById('rxCat'),
+                document.getElementById('rxKurumi'),
+                document.getElementById('rxPika')
+            ];
+            if (!faces[0]) return;
+            let current = 0;
+            setInterval(() => {
+                faces[current].classList.remove('active');
+                current = (current + 1) % faces.length;
+                faces[current].classList.add('active');
+            }, 1800);
+        })();
+
+        // ===== ULTIMATE MOCHI PET (cursor follower) =====
+        (function() {
+            if (document.getElementById('ultimate-mochi-pet')) return;
+
+            let winWidth = window.innerWidth;
+            let winHeight = window.innerHeight;
+            window.addEventListener('resize', () => { winWidth = window.innerWidth; winHeight = window.innerHeight; });
+
+            const PET_WIDTH = 34, PET_HEIGHT = 28;
+            const Z_INDEX_PET = 2147483647, Z_INDEX_PARTICLE = 2147483646;
+            const SPRING_STIFFNESS_DEFAULT = 0.0015, SPRING_STIFFNESS_EXHAUSTED = 0.0008;
+            const FRICTION_DEFAULT = 0.92, FRICTION_CRYING = 0.8, FRICTION_PETTED = 0.85;
+            const RECOVERY_RATE = 2, IDLE_THRESHOLD = 300, EXHAUSTED_THRESHOLD = 400;
+            const CRYING_THRESHOLD = 150, RESCUE_DISTANCE = 40, PETTED_DURATION = 1500;
+            const EAR_ROTATION_DEFAULT_LEFT = -15, EAR_ROTATION_DEFAULT_RIGHT = 15;
+            const PAW_LEFT_OFFSET = 5, PAW_RIGHT_OFFSET = 5;
+
+            const style = document.createElement('style');
+            style.textContent = `
+                :root { --mochi-color:#ffffff; --mochi-dark:#4a3b3b; --mochi-blush:#ffb6c1; }
+                #ultimate-mochi-pet {
+                    position:fixed; width:${PET_WIDTH}px; height:${PET_HEIGHT}px;
+                    z-index:${Z_INDEX_PET}; pointer-events:none; top:0; left:0;
+                    will-change:transform; filter:drop-shadow(0 4px 6px rgba(255,182,193,0.4));
+                }
+                #ultimate-mochi-pet .mochi-body {
+                    position:absolute; width:100%; height:100%;
+                    background:linear-gradient(135deg,var(--mochi-color) 0%,#fff0f5 100%);
+                    border-radius:50% 50% 45% 45%;
+                    box-shadow:inset -2px -2px 6px rgba(255,182,193,0.3),inset 2px 2px 6px rgba(255,255,255,0.9);
+                    border:1.5px solid #ffdae0; pointer-events:auto; cursor:grab;
+                    transition:background 0.3s ease; transform-origin:bottom center;
+                    animation:ump-breathe 2.5s infinite ease-in-out; will-change:transform;
+                }
+                #ultimate-mochi-pet .mochi-body:active { cursor:grabbing; }
+                #ultimate-mochi-pet .mochi-ear {
+                    position:absolute; width:10px; height:16px;
+                    background:linear-gradient(135deg,#fff 0%,#fff0f5 100%);
+                    border:1.5px solid #ffdae0; border-radius:50% 50% 20% 20%;
+                    top:-10px; z-index:-1; transform-origin:bottom center; will-change:transform;
+                }
+                #ultimate-mochi-pet .mochi-ear.left { left:3px; }
+                #ultimate-mochi-pet .mochi-ear.right { right:3px; }
+                #ultimate-mochi-pet .mochi-ear::after {
+                    content:''; position:absolute; width:4.5px; height:8px;
+                    background:#ffcbd1; border-radius:50%; top:2px; left:50%; transform:translateX(-50%);
+                }
+                #ultimate-mochi-pet .mochi-paw {
+                    position:absolute; width:8px; height:5.5px;
+                    background:#fff; border:1.5px solid #ffdae0; border-radius:50%;
+                    bottom:-2.5px; z-index:2; will-change:transform;
+                }
+                #ultimate-mochi-pet .mochi-paw.left { left:${PAW_LEFT_OFFSET}px; }
+                #ultimate-mochi-pet .mochi-paw.right { right:${PAW_RIGHT_OFFSET}px; }
+                #ultimate-mochi-pet .mochi-face {
+                    position:relative; width:100%; height:100%;
+                    pointer-events:none; will-change:transform;
+                }
+                #ultimate-mochi-pet .mochi-eye {
+                    position:absolute; width:4px; height:4px;
+                    background:var(--mochi-dark); border-radius:50%; top:13px;
+                    transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+                }
+                #ultimate-mochi-pet .mochi-eye.left { left:8px; }
+                #ultimate-mochi-pet .mochi-eye.right { right:8px; }
+                #ultimate-mochi-pet .state-idle .mochi-eye,
+                #ultimate-mochi-pet .state-following .mochi-eye,
+                #ultimate-mochi-pet .state-exhausted .mochi-eye { animation:ump-blink 3.5s infinite; }
+                #ultimate-mochi-pet .mochi-blush {
+                    position:absolute; width:7px; height:3px;
+                    background:var(--mochi-blush); border-radius:50%;
+                    top:14.5px; filter:blur(0.8px); opacity:0.8; transition:all 0.3s ease;
+                }
+                #ultimate-mochi-pet .mochi-blush.left { left:2.5px; }
+                #ultimate-mochi-pet .mochi-blush.right { right:2.5px; }
+                #ultimate-mochi-pet .mochi-mouth {
+                    position:absolute; width:5px; height:3px;
+                    border:1.5px solid var(--mochi-dark); border-top:none;
+                    border-radius:0 0 10px 10px; top:14.5px; left:50%;
+                    transform:translateX(-50%); transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+                }
+                #ultimate-mochi-pet .state-petted .mochi-eye {
+                    background:transparent; height:4px; width:6px;
+                    border:1.5px solid var(--mochi-dark); border-bottom:none;
+                    border-radius:10px 10px 0 0; top:11px;
+                }
+                #ultimate-mochi-pet .state-petted .mochi-mouth {
+                    width:5px; height:4px; background:#ff7ea0; border:none;
+                    border-radius:2px 2px 10px 10px; top:13.5px;
+                }
+                #ultimate-mochi-pet .state-petted .mochi-blush { transform:scale(1.3); opacity:1; background:#ff9fb3; }
+                #ultimate-mochi-pet .state-crying .mochi-eye {
+                    background:transparent; height:4px; width:5px;
+                    border:1.5px solid var(--mochi-dark); border-top:none;
+                    border-radius:0 0 10px 10px; top:12px;
+                }
+                #ultimate-mochi-pet .state-crying .mochi-mouth {
+                    width:4px; height:2px; border-bottom:none;
+                    border-top:1.5px solid var(--mochi-dark); border-radius:10px 10px 0 0; top:15.5px;
+                }
+                #ultimate-mochi-pet .state-crying .mochi-blush { transform:translateY(1px) scale(0.8); opacity:0.5; }
+                #ultimate-mochi-pet .state-sleeping .mochi-eye {
+                    background:transparent; height:1px; width:6px;
+                    border-top:1.5px solid var(--mochi-dark); border-radius:0; top:14px;
+                }
+                #ultimate-mochi-pet .state-sleeping .mochi-mouth {
+                    width:3px; height:3px; border:1.5px solid var(--mochi-dark);
+                    border-radius:50%; top:14.5px;
+                }
+                #ultimate-mochi-pet .state-exhausted .mochi-eye {
+                    background:transparent; height:4px; width:4px;
+                    border:1.5px solid var(--mochi-dark); border-radius:50%; top:12px;
+                }
+                #ultimate-mochi-pet .state-exhausted .mochi-mouth {
+                    width:5px; height:4px; border:none; background:#ffcbd1;
+                    border-radius:40% 40% 50% 50%; top:14px;
+                }
+                @keyframes ump-breathe {
+                    0%,100% { transform:scale(1,1) skewX(0deg); }
+                    50% { transform:scale(1.02,0.97) skewX(0.5deg); }
+                }
+                @keyframes ump-blink {
+                    0%,94%,98%,100% { transform:scaleY(1); }
+                    96% { transform:scaleY(0.1); }
+                }
+                @keyframes ump-particle {
+                    0% { transform:translate3d(0,0,0) scale(1) rotate(0deg); opacity:1; }
+                    100% { transform:translate3d(var(--dx),var(--dy),0) scale(0.5) rotate(var(--rot)); opacity:0; }
+                }
+                @keyframes ump-tear {
+                    0% { transform:translateY(0) scale(1) rotate(45deg); opacity:1; }
+                    100% { transform:translateY(15px) scale(0) rotate(45deg); opacity:0; }
+                }
+                .ump-particle {
+                    position:fixed; pointer-events:none; z-index:${Z_INDEX_PARTICLE};
+                    will-change:transform,opacity;
+                    animation:ump-particle var(--duration) cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+                }
+                .ump-tear {
+                    position:absolute; width:3px; height:5px;
+                    background:#80c5de; border-radius:0 50% 50% 50%;
+                    top:14px; z-index:3;
+                    animation:ump-tear 0.8s cubic-bezier(0.55,0.085,0.68,0.53) forwards;
+                }
+                .ump-tear.left { left:8.5px; }
+                .ump-tear.right { right:8.5px; }
+            `;
+            document.head.appendChild(style);
+
+            // Build DOM
+            const container = document.createElement('div');
+            container.id = 'ultimate-mochi-pet';
+
+            const body = document.createElement('div');
+            body.className = 'mochi-body state-idle';
+
+            const face = document.createElement('div');
+            face.className = 'mochi-face';
+
+            const earL = Object.assign(document.createElement('div'), { className: 'mochi-ear left' });
+            const earR = Object.assign(document.createElement('div'), { className: 'mochi-ear right' });
+            const pawL = Object.assign(document.createElement('div'), { className: 'mochi-paw left' });
+            const pawR = Object.assign(document.createElement('div'), { className: 'mochi-paw right' });
+            const eyeL = Object.assign(document.createElement('div'), { className: 'mochi-eye left' });
+            const eyeR = Object.assign(document.createElement('div'), { className: 'mochi-eye right' });
+            const blushL = Object.assign(document.createElement('div'), { className: 'mochi-blush left' });
+            const blushR = Object.assign(document.createElement('div'), { className: 'mochi-blush right' });
+            const mouth = Object.assign(document.createElement('div'), { className: 'mochi-mouth' });
+
+            [earL, earR, pawL, pawR].forEach(el => body.appendChild(el));
+            [eyeL, eyeR, blushL, blushR, mouth].forEach(el => face.appendChild(el));
+            body.appendChild(face);
+            container.appendChild(body);
+            document.body.appendChild(container);
+
+            // Particle engine
+            const particleTypes = {
+                magic: { content:['✨','✧','🌸'], color:'#ffd1dc', dist:25, dur:1200, size:10 },
+                heart: { content:['💖','💕','💓'], color:'#ff7ea0', dist:40, dur:1500, size:12 },
+                sleep: { content:'💤', color:'#80c5de', dist:30, dur:1800, size:11 },
+                sweat: { content:'💦', color:'#80c5de', dist:20, dur:1000, size:10 }
+            };
+
+            function spawnParticle(x, y, type) {
+                const cfg = particleTypes[type]; if (!cfg) return;
+                const p = document.createElement('div');
+                p.className = 'ump-particle';
+                p.textContent = Array.isArray(cfg.content) ? cfg.content[Math.floor(Math.random() * cfg.content.length)] : cfg.content;
+                p.style.fontSize = cfg.size + 'px';
+                p.style.color = cfg.color;
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                const angle = type === 'sleep' ? (Math.random() * -Math.PI - 0.5 * Math.PI) : Math.random() * Math.PI * 2;
+                p.style.setProperty('--dx', (Math.cos(angle) * cfg.dist) + 'px');
+                p.style.setProperty('--dy', (Math.sin(angle) * cfg.dist - (type === 'sleep' ? 30 : 15)) + 'px');
+                p.style.setProperty('--rot', (Math.random() * 180 - 90) + 'deg');
+                p.style.setProperty('--duration', cfg.dur + 'ms');
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), cfg.dur);
+            }
+
+            // State
+            let mouseX = winWidth / 2, mouseY = winHeight / 2;
+            let prevMouseX = mouseX, prevMouseY = mouseY;
+            let petX = mouseX, petY = mouseY;
+            let velX = 0, velY = 0;
+            let currentLookX = 0, currentLookY = 0;
+            let state = 'idle', fatigue = 0, idleTimer = 0, particleTimer = 0;
+            let pettedTimer = null, lastTime = performance.now(), isDragging = false;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX; mouseY = e.clientY; idleTimer = 0;
+                if (state === 'sleeping' && !isDragging) changeState('following');
+            });
+
+            function changeState(newState) {
+                if (state === newState) return;
+                state = newState;
+                body.className = `mochi-body state-${state}`;
+            }
+
+            function update(time) {
+                const dt = Math.min((time - lastTime) / 16.66, 2);
+                lastTime = time;
+
+                const targetX = mouseX - PET_WIDTH / 2;
+                const targetY = mouseY - PET_HEIGHT / 2;
+                const dx = targetX - petX, dy = targetY - petY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const mouseVelX = mouseX - prevMouseX, mouseVelY = mouseY - prevMouseY;
+                prevMouseX = mouseX; prevMouseY = mouseY;
+
+                if (isDragging) {
+                    petX = targetX; petY = targetY;
+                    velX = mouseVelX * 0.8; velY = mouseVelY * 0.8;
+                    changeState('petted');
+                } else {
+                    if (state !== 'petted') {
+                        if (state === 'crying') {
+                            velX *= Math.pow(FRICTION_CRYING, dt);
+                            velY *= Math.pow(FRICTION_CRYING, dt);
+                            particleTimer += dt;
+                            if (particleTimer > 30) {
+                                const side = Math.random() > 0.5 ? 'left' : 'right';
+                                const tear = document.createElement('div');
+                                tear.className = `ump-tear ${side}`;
+                                face.appendChild(tear);
+                                setTimeout(() => { if (tear.parentNode) tear.remove(); }, 800);
+                                particleTimer = 0;
+                            }
+                            body.style.filter = distance < RESCUE_DISTANCE ? 'brightness(1.08)' : 'none';
+                        } else {
+                            idleTimer += dt;
+                            if (idleTimer > IDLE_THRESHOLD) {
+                                changeState('sleeping');
+                                velX *= FRICTION_DEFAULT; velY *= FRICTION_DEFAULT;
+                                particleTimer += dt;
+                                if (particleTimer > 60) { spawnParticle(petX + PET_WIDTH/2, petY - PET_HEIGHT/2, 'sleep'); particleTimer = 0; }
+                            } else {
+                                if (distance > EXHAUSTED_THRESHOLD) {
+                                    fatigue += dt;
+                                    changeState('exhausted');
+                                    if (Math.random() < 0.015) spawnParticle(petX + PET_WIDTH/2, petY, 'sweat');
+                                    if (fatigue > CRYING_THRESHOLD) { changeState('crying'); fatigue = 0; }
+                                } else {
+                                    fatigue = Math.max(0, fatigue - dt * RECOVERY_RATE);
+                                    changeState('following');
+                                    if (distance > PET_WIDTH) {
+                                        particleTimer += Math.sqrt(velX * velX + velY * velY) * dt;
+                                        if (particleTimer > 150) { spawnParticle(petX + PET_WIDTH/2, petY + PET_HEIGHT, 'magic'); particleTimer = 0; }
+                                    }
+                                }
+                            }
+                            if (state !== 'sleeping') {
+                                const spring = state === 'exhausted' ? SPRING_STIFFNESS_EXHAUSTED : SPRING_STIFFNESS_DEFAULT;
+                                velX = (velX + dx * spring * dt) * FRICTION_DEFAULT;
+                                velY = (velY + dy * spring * dt) * FRICTION_DEFAULT;
+                            }
+                        }
+                    } else {
+                        velX *= FRICTION_PETTED; velY *= FRICTION_PETTED;
+                    }
+                }
+
+                if (!isDragging) {
+                    petX += velX * dt; petY += velY * dt;
+                    if (petX <= 0) { petX = 0; velX = Math.abs(velX) * 0.6; }
+                    else if (petX >= winWidth - PET_WIDTH) { petX = winWidth - PET_WIDTH; velX = -Math.abs(velX) * 0.6; }
+                    if (petY <= 0) { petY = 0; velY = Math.abs(velY) * 0.6; }
+                    else if (petY >= winHeight - PET_HEIGHT) { petY = winHeight - PET_HEIGHT; velY = -Math.abs(velY) * 0.6; }
+                } else {
+                    petX = Math.max(0, Math.min(winWidth - PET_WIDTH, petX));
+                    petY = Math.max(0, Math.min(winHeight - PET_HEIGHT, petY));
+                }
+
+                const speed = Math.sqrt(velX * velX + velY * velY);
+                const stretch = Math.min(speed * 0.015, 0.25);
+                const scaleX = 1 - stretch, scaleY = 1 + stretch;
+                const rotation = velX * 1.2;
+
+                let targetLookX = 0, targetLookY = 0;
+                if (state !== 'sleeping' && state !== 'crying' && !isDragging) {
+                    targetLookX = Math.max(-2.5, Math.min(2.5, dx * 0.04));
+                    targetLookY = Math.max(-2.5, Math.min(2.5, dy * 0.04));
+                } else if (state === 'crying') { targetLookY = 1.5; }
+                else if (state === 'petted') { targetLookY = -1; }
+
+                currentLookX += (targetLookX - currentLookX) * 0.15;
+                currentLookY += (targetLookY - currentLookY) * 0.15;
+                face.style.transform = `translate3d(${currentLookX}px,${currentLookY}px,0)`;
+
+                const breatheBob = Math.sin(time * 0.003) * 1.5;
+                const walkBounce = Math.abs(Math.sin(time * 0.012)) * Math.min(speed * 0.3, 4);
+                const yOffset = (state === 'sleeping' || state === 'petted') ? breatheBob : breatheBob - walkBounce;
+                container.style.transform = `translate3d(${petX}px,${petY + yOffset}px,0) rotate(${rotation}deg) scale(${scaleX},${scaleY})`;
+
+                const earWiggle = Math.sin(time * 0.002) * 3 + Math.cos(time * 0.006) * 2;
+                earL.style.transform = `rotate(${EAR_ROTATION_DEFAULT_LEFT + (-velX * 1.5 - earWiggle)}deg)`;
+                earR.style.transform = `rotate(${EAR_ROTATION_DEFAULT_RIGHT + (-velX * 1.5 + earWiggle)}deg)`;
+
+                const pawY = Math.max(0, velY * 0.5);
+                const pawSwing = velX * 2;
+                pawL.style.transform = `translateY(${pawY + (speed > 1 ? Math.sin(time * 0.02) * 2.5 : 0)}px) rotate(${pawSwing}deg)`;
+                pawR.style.transform = `translateY(${pawY + (speed > 1 ? Math.cos(time * 0.02) * 2.5 : 0)}px) rotate(${pawSwing}deg)`;
+
+                requestAnimationFrame(update);
+            }
+
+            body.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isDragging = true; fatigue = 0; idleTimer = 0;
+                body.style.filter = 'none';
+                changeState('petted');
+                for (let i = 0; i < 4; i++) {
+                    setTimeout(() => spawnParticle(
+                        petX + PET_WIDTH/2 + (Math.random() - 0.5) * PET_WIDTH * 0.8,
+                        petY + PET_HEIGHT/2 + (Math.random() - 0.5) * PET_HEIGHT * 0.8,
+                        'heart'
+                    ), i * 80);
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    if (Math.sqrt(velX * velX + velY * velY) > 10) changeState('following');
+                    else {
+                        velY -= 2;
+                        clearTimeout(pettedTimer);
+                        pettedTimer = setTimeout(() => { if (state === 'petted') changeState('following'); }, PETTED_DURATION);
+                    }
+                }
+            });
+
+            requestAnimationFrame(update);
+        })();
+    </script>
+</body>
+</html>
