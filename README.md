@@ -1,10 +1,9 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="Mochi Pets Collection Banner" width="100%"/>
-
 # 🌸 Mochi Pets Collection
 
 **~ tiny companions, infinite charm ~**
+<b><p>Collect Your Banner from</p></b><img src="https://github.com/mahdi2774/mochis/blob/main/assets/Collections.png" alt="Mochi Pets Collection Banner" width="100%"/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-ff69b4.svg?style=flat-square)](LICENSE)
 [![Vanilla JS](https://img.shields.io/badge/Built%20With-Vanilla%20JS-ffb6c1?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -220,3 +219,9 @@ See [`LICENSE`](LICENSE) for full details.
 ⭐ *If you enjoy this project, consider giving it a star!* ⭐
 
 </div>
+
+#SomescreenShots
+<img width="864" height="1821" alt="1780075820834-019e74c8-1240-759e-8caf-2c9b07bec2a4" src="https://github.com/user-attachments/assets/acb03c6a-fc3f-4195-aa3e-4905591a4522" />
+<img width="1366" height="768" alt="Screenshot (33)" src="https://github.com/user-attachments/assets/dfa1c107-73ad-47a8-9552-681c76101acd" />
+<img width="1366" height="768" alt="Screenshot (36)" src="https://github.com/user-attachments/assets/dcfdb64f-60aa-48c2-a64f-6b358b9867c7" />
+<img width="1366" height="768" alt="Screenshot (37)" src="https://github.com/user-attachments/assets/a86898ca-2a94-4980-b444-882990013f50" />
