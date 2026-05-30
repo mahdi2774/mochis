@@ -14,7 +14,7 @@
 *A collection of hand-crafted, self-contained virtual pets that live directly in your browser.*  
 *They follow your cursor, express emotions, and scatter particle trails across any webpage — zero setup required.*
 
-[**✨ Live Demo**](https://your-live-url.com) · [**📖 Documentation**](#-how-to-adopt) · [**🐾 Browse Pets**](#-meet-the-collection) · [**🤝 Contribute**](#-contributing)
+[**✨ Live Demo**](https://mahdi2774.github.io/mochis/) · [**📖 Documentation**](#-how-to-adopt) · [**🐾 Browse Pets**](#-meet-the-collection) · [**🤝 Contribute**](#-contributing)
 
 </div>
 
@@ -51,7 +51,7 @@ Each Mochi Pet is an independent personality — a unique blend of physics, CSS 
 
 **Method 1 — From the Collection Site (Recommended)**
 
-1. Visit the [**Mochi Pets Collection**](https://your-live-url.com) page.
+1. Visit the [**Mochi Pets Collection**](https://mahdi2774.github.io/mochis/) page.
 2. Browse the collection and click any card to **copy its adoption script**.
 3. Open any webpage in your browser.
 4. Open the Developer Console:
@@ -220,4 +220,3 @@ See [`LICENSE`](LICENSE) for full details.
 ⭐ *If you enjoy this project, consider giving it a star!* ⭐
 
 </div>
-```
