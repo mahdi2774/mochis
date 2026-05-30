@@ -2,8 +2,9 @@
 
 # 🌸 Mochi Pets Collection
 
-**~ tiny companions, infinite charm ~**
-<b><p>Collect Your Banner from</p></b><img src="https://github.com/mahdi2774/mochis/blob/main/assets/Collections.png" alt="Mochi Pets Collection Banner" width="100%"/>
+**~ tiny companions, infinite charm ~**<br><br>
+<b>Collect Your Banner by <a href="https://github.com/mahdi2774/mochis/blob/main/assets">Clicking ME</a></b>
+<img src="https://github.com/mahdi2774/mochis/blob/main/assets/Collections.png" alt="Mochi Pets Collection Banner" width="100%"/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-ff69b4.svg?style=flat-square)](LICENSE)
 [![Vanilla JS](https://img.shields.io/badge/Built%20With-Vanilla%20JS-ffb6c1?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
